@@ -11,13 +11,13 @@ insert into member values (109, 'Noah', 'm',19801217, 01098238495,'noah','noah12
 insert into member values (110, 'Lucas', 'm',19551104, 01023005647,'lucas','lucas123');
 insert into member values (111, 'Mason', 'm',19900706, 01012334723,'mason','mason123');
 insert into member values (112, 'Caden', 'm',19880302, 01073529399,'caden','caden123');
-insert into member values (113, 'Logan', 'm',1965, 01088392038,'logan','logan123');
-insert into member values (114, 'Emma', 'f',1983, 01038462020,'emma','emma123');
-insert into member values (115, 'Mia', 'f',1965, 01099374625,'mia','mia123');
-insert into member values (116, 'Isabel', 'm',1965,01089362838 ,'isabel','isabel123');
-insert into member values (117, 'Riley', 'f',1932, 01082640173,'riley','riley123');
-insert into member values (118, 'Jacob', 'm',1989, 01066452837,'jacob','jacob123');
-insert into member values (119, 'Chloe', 'f',1958, 01092735152,'chloe','chole123');
+insert into member values (113, 'Logan', 'm',20001223, 01088392038,'logan','logan123');
+insert into member values (114, 'Emma', 'f',20010719, 01038462020,'emma','emma123');
+insert into member values (115, 'Mia', 'f',19990206, 01099374625,'mia','mia123');
+insert into member values (116, 'Isabel', 'm',19690223,01089362838 ,'isabel','isabel123');
+insert into member values (117, 'Riley', 'f',20001108, 01082640173,'riley','riley123');
+insert into member values (118, 'Jacob', 'm',20031117, 01066452837,'jacob','jacob123');
+insert into member values (119, 'Chloe', 'f',19980301, 01092735152,'chloe','chole123');
 
 INSERT INTO trainer VALUES (1,'Amy','f');
 INSERT INTO trainer VALUES (2,'Tom','m');
