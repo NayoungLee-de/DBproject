@@ -30,6 +30,7 @@ def login_proc():
 				session['logFlag'] = True
 				session['mNum'] = rs[0]
 				session['userId'] = userId
+				session["attend"] = rs[0]
 				return redirect(url_for('main'))
 			else:
 				return redirect(url_for('login'))
@@ -41,7 +42,10 @@ def logout():
 
 @app.route('/attend')
 def attend():
-    return render_template('attend.html')
+	if session['attend'] == 0:
+		return '이미 출석되었습니다'
+	else:
+		return render_template('attend.html')
 
 @app.route('/attend_p',methods=('GET','POST'))
 def attend_p():
@@ -49,8 +53,7 @@ def attend_p():
 		attend = request.form['date']
 		mNum = session['mNum']
 		tNum = request.form['tNum']
-
-	if(session["attend"] != mNum):
+		
 		if len(attend) != 6 or tNum==0:
 			return '다시 입력해주세요'
 		else:
@@ -60,12 +63,28 @@ def attend_p():
 				(mNum,tNum,attend)
 			)
 			db.commit()
-			session["attend"] = mNum
+			session["attend"] = 0
 			db.close()
 			return render_template('main.html')
-	else: 
-		return render_template('main.html')
-		
+
+def select():
+	conn = sqlite3.connect('data.db')
+	cursor = conn.cursor()
+	sql = 'select * from management where mNum = ?'
+	cursor.execute(sql,(session['mNum'],))
+	rows = cursor.fetchall()
+	conn.close()
+	return rows
+
+def list_test():
+	list = select()
+	print(list)
+
+@app.route('/lists')	
+def lists():
+	lists = select()
+	return render_template('lists.html',lists = lists)
+
 app.secret_key = 'sample_secret_key'
 
 if __name__ == '__main__':
