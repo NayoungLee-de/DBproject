@@ -84,7 +84,40 @@ def list_test():
 def lists():
 	lists = select()
 	return render_template('lists.html',lists = lists)
+#----------------------------------------------------
 
+@app.route('/register')
+def register():
+	return render_template('register.html')
+
+@app.route('/register_p', methods=['GET', 'POST'])
+def register_p():
+	if request.method == 'POST':
+		mName = request.form['mName']
+		sex = request.form['sex']
+		bDate = request.form['bDate']
+		pNum = request.form['phoneNum']
+		userId = request.form['userId']
+		userPw1 = request.form['userPw']
+		userPw2 = request.form['PWCheck']
+		
+		if not(mName and sex and bDate and pNum and userId and userPw1 and userPw2):
+			return "입력되지 않은 정보가 있습니다"
+		elif userPw1 != userPw2:
+			return "비밀번호가 일치하지 않습니다"
+		else:
+			db = sqlite3.connect('data.db')	
+			db.execute(
+				'INSERT INTO member (mNum,mName,sex,bDate,phoneNum,userId, userPw)'
+				'VALUES (?,?,?,?,?,?,?)',
+				(0, mName,sex,bDate,pNum,userId,userPw1)
+			)
+			db.commit()
+			return "회원가입 완료"
+		
+		return redirect(url_for('login'))
+
+#-----------------------------------------------------------
 app.secret_key = 'sample_secret_key'
 
 if __name__ == '__main__':
