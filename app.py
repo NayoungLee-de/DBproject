@@ -108,9 +108,9 @@ def register_p():
 		else:
 			db = sqlite3.connect('data.db')	
 			db.execute(
-				'INSERT INTO member (mNum,mName,sex,bDate,phoneNum,userId, userPw)'
-				'VALUES (?,?,?,?,?,?,?)',
-				(0, mName,sex,bDate,pNum,userId,userPw1)
+				'INSERT INTO member (mName,sex,bDate,phoneNum,userId, userPw)'
+				'VALUES (?,?,?,?,?,?)',
+				( mName,sex,bDate,pNum,userId,userPw1)
 			)
 			db.commit()
 			return "회원가입 완료"
