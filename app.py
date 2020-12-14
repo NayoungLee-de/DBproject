@@ -83,7 +83,24 @@ def list_test():
 @app.route('/lists')	
 def lists():
 	lists = select()
-	return render_template('lists.html',lists = lists)
+	return render_template('lists.html',lists=lists)
+#--------------------------------------------------------------
+
+@app.route('/status')
+def status():
+	conn = sqlite3.connect('data.db')
+	cursor = conn.cursor()
+	sql = 'select mNum,count(mNum) from management group by mNum order by count(mNum) desc'
+	cursor.execute(sql)
+	rows = cursor.fetchall()
+	conn.close()
+	return rows
+
+@app.route('/attendanceKing')	
+def attendancestatus():
+	lists= status()
+	return render_template('attendanceKing.html',lists=lists)
+	
 #----------------------------------------------------
 
 @app.route('/register')
@@ -108,9 +125,9 @@ def register_p():
 		else:
 			db = sqlite3.connect('data.db')	
 			db.execute(
-				'INSERT INTO member (mName,sex,bDate,phoneNum,userId, userPw)'
-				'VALUES (?,?,?,?,?,?)',
-				( mName,sex,bDate,pNum,userId,userPw1)
+				'INSERT INTO member (mNum,mName,sex,bDate,phoneNum,userId, userPw)'
+				'VALUES (?,?,?,?,?,?,?)',
+				(0, mName,sex,bDate,pNum,userId,userPw1)
 			)
 			db.commit()
 			return "회원가입 완료"
@@ -118,6 +135,9 @@ def register_p():
 		return redirect(url_for('login'))
 
 #-----------------------------------------------------------
+
+
+
 app.secret_key = 'sample_secret_key'
 
 if __name__ == '__main__':
