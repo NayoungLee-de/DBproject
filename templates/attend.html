@@ -1,33 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
   <title>출석체크</title>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
 <body>
-
-<div class="container">
-  <br>
-  <h2>출석체크</h2>
-  <form action="/attend_p" method="post">
-
-    <div class="form-group">
-      <label for="date">날짜 :</label>
-      <input type="text" class="form-control" placeholder="ex) 200213" name="date">
-    </div>
-    <div class="form-group">
-      <label for="tNum">트레이너 번호 :</label>
-      <input type="int" class="form-control" placeholder="ex) 1" name="tNum">
-    </div>
- 
-    <button type="submit" class="btn btn-primary">출석</button>
-  </form>
-</div>
-
+    <form action="/attend_p" method="post">
+    <p>연도,월,일 6자리를 입력해주세요. (ex-200213) <br>
+    출석 : <input type= "text" name="date"><br>
+    트레이너 번호 : <input type= "int" name="tNum"><br>
+    <input type = "submit" value="출석체크">
+    </form>
 </body>
 </html>
