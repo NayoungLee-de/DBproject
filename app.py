@@ -77,15 +77,10 @@ def select():
 	conn.close()
 	return rows
 
-def list_test():
-	list = select()
-	print(list)
-
 @app.route('/lists')	
 def lists():
 	lists = select()
-	return render_template('lists.html',lists=lists)
-#--------------------------------------------------------------
+	return render_template('lists.html',lists = lists)
 
 @app.route('/status')
 def status():
@@ -101,8 +96,6 @@ def status():
 def attendancestatus():
 	lists= status()
 	return render_template('attendanceKing.html',lists=lists)
-
-#----------------------------------------------------
 
 @app.route('/register')
 def register():
@@ -124,18 +117,24 @@ def register_p():
 		elif userPw1 != userPw2:
 			return "비밀번호가 일치하지 않습니다"
 		else:
-			db = sqlite3.connect('data.db')	
-			db.execute(
-				'INSERT INTO member (mNum,mName,sex,bDate,phoneNum,userId, userPw)'
-				'VALUES (?,?,?,?,?,?,?)',
-				(0, mName,sex,bDate,pNum,userId,userPw1)
-			)
-			db.commit()
-			return "회원가입 완료"
-		
-		return redirect(url_for('login'))
+			db = sqlite3.connect('data.db')
+			cursor = db.cursor()
+			cursor.execute ('select userId from member where userId = ?',(userId,))
+			rows = db.fetch()
 
-#-----------------------------------------------------------
+			if userId == rows :
+				return '이미 존재하는 아이디입니다.'
+			else:
+				cursor.execute(
+					'INSERT INTO member (mName,sex,bDate,phoneNum,userId, userPw)'
+					'VALUES (?,?,?,?,?,?)',
+					( mName,sex,bDate,pNum,userId,userPw1)
+				)
+				db.commit()
+				return "회원가입 완료"
+
+	return redirect(url_for('login'))
+
 @app.route('/search')
 def search():
 	return render_template('search.html')
@@ -185,7 +184,7 @@ def search_proc():
 			return render_template('search_lists.html',lists = lists)
 		
 	return render_template('main.html')
-#--------------------------------------------------------
+
 @app.route('/findId')
 def findId():
 	return render_template('findId.html')
@@ -194,7 +193,7 @@ def findId():
 def findId_():
 	mName = request.form['mName']
 	phoneNum=request.form['phoneNum']
-	
+
 	if len(mName) == 0 and len(phoneNum) < 8:
 		return "다시 입력하세요"
 	elif len(mName) > 0 and len(phoneNum) == 0:	
@@ -234,6 +233,7 @@ def findId_():
 			print(lists)
 			return render_template('IdResult.html',lists = lists)
 	return render_template('IdResult.html')
+	
 #--------------------------------------------------------------
 @app.route('/findPw')
 def findPw():
@@ -259,7 +259,7 @@ def findPw_():
 			lists = rows
 			print(lists)
 			return render_template('PwResult.html',lists = lists[0])
-		
+
 	elif len(userId) > 0 and len(mName) > 0 and len(phoneNum) == 0:	
 		conn = sqlite3.connect('data.db')
 		cursor = conn.cursor()
@@ -311,7 +311,6 @@ def findPw_():
 			print(lists)
 			return render_template('PwResult.html',lists = lists)
 
-	
 	elif len(userId)==0 and len(mName) > 0 and len(phoneNum) == 8:
 		conn = sqlite3.connect('data.db')
 		cursor = conn.cursor()
@@ -337,10 +336,8 @@ def findPw_():
 			print(lists)
 			return render_template('PwResult.html',lists = lists[0])
 
-	
 	return render_template('PwResult.html')
 
-#------------------------------------------
 app.secret_key = 'sample_secret_key'
 
 if __name__ == '__main__':
