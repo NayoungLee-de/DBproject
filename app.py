@@ -77,14 +77,32 @@ def select():
 	conn.close()
 	return rows
 
-# def list_test():
-# 	list = select()
-# 	print(list)
+def list_test():
+	list = select()
+	print(list)
 
 @app.route('/lists')	
 def lists():
 	lists = select()
-	return render_template('lists.html',lists = lists)
+	return render_template('lists.html',lists=lists)
+#--------------------------------------------------------------
+
+@app.route('/status')
+def status():
+	conn = sqlite3.connect('data.db')
+	cursor = conn.cursor()
+	sql = 'select mNum,count(mNum) from management group by mNum order by count(mNum) desc'
+	cursor.execute(sql)
+	rows = cursor.fetchall()
+	conn.close()
+	return rows
+
+@app.route('/attendanceKing')	
+def attendancestatus():
+	lists= status()
+	return render_template('attendanceKing.html',lists=lists)
+
+#----------------------------------------------------
 
 @app.route('/register')
 def register():
@@ -106,25 +124,18 @@ def register_p():
 		elif userPw1 != userPw2:
 			return "비밀번호가 일치하지 않습니다"
 		else:
-			db = sqlite3.connect('data.db')
-			cursor = db.cursor()
-			cursor.execute ('select userId from member where userId = ?',(userId,))
-			rows = db.fetch()
+			db = sqlite3.connect('data.db')	
+			db.execute(
+				'INSERT INTO member (mNum,mName,sex,bDate,phoneNum,userId, userPw)'
+				'VALUES (?,?,?,?,?,?,?)',
+				(0, mName,sex,bDate,pNum,userId,userPw1)
+			)
+			db.commit()
+			return "회원가입 완료"
+		
+		return redirect(url_for('login'))
 
-			if userId == rows :
-				return '이미 존재하는 아이디입니다.'
-			else:
-				cursor.execute(
-					'INSERT INTO member (mName,sex,bDate,phoneNum,userId, userPw)'
-					'VALUES (?,?,?,?,?,?)',
-					( mName,sex,bDate,pNum,userId,userPw1)
-				)
-				db.commit()
-				return "회원가입 완료"
-
-	return redirect(url_for('login'))
-#-----------------------------------------------
-
+#-----------------------------------------------------------
 @app.route('/search')
 def search():
 	return render_template('search.html')
@@ -174,7 +185,162 @@ def search_proc():
 			return render_template('search_lists.html',lists = lists)
 		
 	return render_template('main.html')
+#--------------------------------------------------------
+@app.route('/findId')
+def findId():
+	return render_template('findId.html')
 
+@app.route('/findId_',methods=['POST'])
+def findId_():
+	mName = request.form['mName']
+	phoneNum=request.form['phoneNum']
+	
+	if len(mName) == 0 and len(phoneNum) < 8:
+		return "다시 입력하세요"
+	elif len(mName) > 0 and len(phoneNum) == 0:	
+		conn = sqlite3.connect('data.db')
+		cursor = conn.cursor()
+		cursor.execute("select userId from member where mName = ?",(mName,)) 
+		rows = cursor.fetchall()
+		conn.close()
+		if len(rows) == 0:
+			return '회원이 아닙니다.'
+		else:
+			lists = rows
+			print(lists)
+			return render_template('IdResult.html',lists = lists)
+	elif len(mName) == 0 and len(phoneNum) == 8:
+		conn = sqlite3.connect('data.db')
+		cursor = conn.cursor()
+		cursor.execute("select userId from member where phoneNum like ?",('__'+phoneNum,)) 
+		rows = cursor.fetchall()
+		conn.close()
+		if len(rows) == 0:
+			return '회원이 아닙니다.'
+		else:
+			lists = rows
+			print(lists)
+			return render_template('IdResult.html',lists = lists)
+	elif len(mName) > 0 and len(phoneNum) == 8:
+		conn = sqlite3.connect('data.db')
+		cursor = conn.cursor()
+		cursor.execute("select userId from member where mName = ? and phoneNum like ?",(mName,'__'+phoneNum,)) 
+		rows = cursor.fetchall()
+		conn.close()
+		if len(rows) == 0:
+			return '회원이 아닙니다.'
+		else:
+			lists = rows
+			print(lists)
+			return render_template('IdResult.html',lists = lists)
+	return render_template('IdResult.html')
+#--------------------------------------------------------------
+@app.route('/findPw')
+def findPw():
+	return render_template('findPw.html')
+
+@app.route('/findPw_',methods=['POST'])
+def findPw_():
+	userId=request.form['userId']
+	mName = request.form['mName']
+	phoneNum=request.form['phoneNum']
+
+	if len(userId)==0 and len(mName) == 0 and len(phoneNum) < 8:
+		return "다시 입력하세요"
+	elif len(userId) > 0 and len(mName)==0 and len(phoneNum) == 0:	
+		conn = sqlite3.connect('data.db')
+		cursor = conn.cursor()
+		cursor.execute("select userPw from member where userId = ?",(userId,)) 
+		rows = cursor.fetchall()
+		conn.close()
+		if len(rows) == 0:
+			return '회원이 아닙니다.'
+		else:
+			lists = rows
+			print(lists)
+			return render_template('PwResult.html',lists = lists[0])
+		
+	elif len(userId) > 0 and len(mName) > 0 and len(phoneNum) == 0:	
+		conn = sqlite3.connect('data.db')
+		cursor = conn.cursor()
+		cursor.execute("select userPw from member where userId = ? and mName = ? ",(userId,mName,)) 
+		rows = cursor.fetchall()
+		conn.close()
+		if len(rows) == 0:
+			return '회원이 아닙니다.'
+		else:
+			lists = rows
+			print(lists)
+			return render_template('PwResult.html',lists = lists[0])
+	elif len(userId)>0 and len(mName) == 0 and len(phoneNum) == 8:
+		conn = sqlite3.connect('data.db')
+		cursor = conn.cursor()
+		cursor.execute("select userId from member where userId= ? and phoneNum like ?",(userId,'__'+phoneNum,)) 
+		rows = cursor.fetchall()
+		conn.close()
+		if len(rows) == 0:
+			return '회원이 아닙니다.'
+		else:
+			lists = rows
+			print(lists)
+			return render_template('PwResult.html',lists = lists)
+
+	elif len(userId)==0 and len(mName) == 0 and len(phoneNum) == 8:
+		conn = sqlite3.connect('data.db')
+		cursor = conn.cursor()
+		cursor.execute("select userId from member where phoneNum like ?",('__'+phoneNum,)) 
+		rows = cursor.fetchall()
+		conn.close()
+		if len(rows) == 0:
+			return '회원이 아닙니다.'
+		else:
+			lists = rows
+			print(lists)
+			return render_template('PwResult.html',lists = lists)	
+
+	elif len(userId)==0 and len(mName) > 0 and len(phoneNum) == 0:
+		conn = sqlite3.connect('data.db')
+		cursor = conn.cursor()
+		cursor.execute("select userId from member where mName= ?",(mName,)) 
+		rows = cursor.fetchall()
+		conn.close()
+		if len(rows) == 0:
+			return '회원이 아닙니다.'
+		else:
+			lists = rows
+			print(lists)
+			return render_template('PwResult.html',lists = lists)
+
+	
+	elif len(userId)==0 and len(mName) > 0 and len(phoneNum) == 8:
+		conn = sqlite3.connect('data.db')
+		cursor = conn.cursor()
+		cursor.execute("select userId from member where mName= ? and phoneNum like ?",(mName,'__'+phoneNum,)) 
+		rows = cursor.fetchall()
+		conn.close()
+		if len(rows) == 0:
+			return '회원이 아닙니다.'
+		else:
+			lists = rows
+			print(lists)
+			return render_template('PwResult.html',lists = lists)					
+	elif len(userId) > 0 and len(mName) > 0 and len(phoneNum) == 8:	
+		conn = sqlite3.connect('data.db')
+		cursor = conn.cursor()
+		cursor.execute("select userPw from member where userId = ? and mName = ? and phoneNum like ?",(userId,mName,'__'+phoneNum,)) 
+		rows = cursor.fetchall()
+		conn.close()
+		if len(rows) == 0:
+			return '회원이 아닙니다.'
+		else:
+			lists = rows
+			print(lists)
+			return render_template('PwResult.html',lists = lists[0])
+
+	
+	return render_template('PwResult.html')
+
+#------------------------------------------
 app.secret_key = 'sample_secret_key'
 
 if __name__ == '__main__':
