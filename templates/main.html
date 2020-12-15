@@ -44,6 +44,10 @@
       <li class="nav-item">
         <a class="nav-link" href="/register">Register</a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/attendanceKing">이 달의 출석왕</a>
+      </li>
+      
       {% endif %}
   
       {% if session.get('logFlag')%}
@@ -54,10 +58,13 @@
           <a class="nav-link" href="/attend">attendance</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/lists">my list</a>
+          <a class="nav-link" href="/lists">my list</a> 
         </li>
         <li class="nav-item">
           <a class="nav-link" href="/logout">logout</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/attendanceKing">이 달의 출석왕</a>
         </li>
         
       {% endif %}
