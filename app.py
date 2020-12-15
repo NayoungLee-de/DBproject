@@ -27,7 +27,7 @@ def login_proc():
 		db.close()
 		for rs in rows:
 			print (rs)
-			if userId == rs[1] and userPw == rs[2]:
+			if userPw == rs[2]:
 				session['logFlag'] = True
 				session['mNum'] = rs[0]
 				session['userId'] = userId
