@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>로그인</title>
+  <title>아이디 찾기</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -14,22 +14,20 @@
    
 <div class="container">
   <br>
-  <h2>로그인</h2>
-  <form action="/login_proc" method="post">
+  <h2>아이디 찾기</h2>
+  <form action="/findId" method="post">
+    <div class="form-group">
+      <label for="mName">이름:</label>
+      <input type="text" class="form-control" placeholder="Enter name" name="mName">
+    </div>
+    <div class="form-group">
+      <label for="phoneNum">전화번호:</label>
+      <input type="text" class="form-control" placeholder="Enter phonenumber" name="phoneNum">
+    </div>
 
-    <div class="form-group">
-      <label for="id">User Id:</label>
-      <input type="text" class="form-control" placeholder="Enter id" name="id">
-    </div>
-    <div class="form-group">
-      <label for="pw">Password:</label>
-      <input type="password" class="form-control" placeholder="Enter password" name="pw">
-    </div>
-    <div id=link>
-      <a href="/FindId">Id찾기</a> / <a href="/FindPw">Pw찾기</a>
-    </div>
      <br> 
-    <button type="submit" class="btn btn-primary">로그인</button>
+    <button type="submit" class="btn btn-primary">찾기</button>
+    <input type="button" value="취소" onClick="window.close()">
   </form>
 </div>
 
