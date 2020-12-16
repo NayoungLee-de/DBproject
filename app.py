@@ -31,7 +31,7 @@ def login_proc():
 				session['logFlag'] = True
 				session['mNum'] = rs[0]
 				session['userId'] = userId
-				session["attend"] = rs[0]
+				session["attend"] = 0
 				return redirect(url_for('main'))
 			else:
 				return redirect(url_for('login'))
@@ -43,7 +43,7 @@ def logout():
 
 @app.route('/attend')
 def attend():
-	if session['attend'] == 0:
+	if session['attend'] == session['mNum']:
 		return '이미 출석되었습니다'
 	else:
 		return render_template('attend.html')
@@ -61,8 +61,8 @@ def attend_p():
 			db = sqlite3.connect('data.db')
 			
 			cursor = db.cursor()
-			sql = ('select * from management where attend = ?')
-			cursor.execute(sql,(attend,))
+			sql = ('select * from management where attend = ? and mNum = ?')
+			cursor.execute(sql,(attend,session['mNum']))
 			rows = cursor.fetchall()
 			if len(rows) == 0:
 				db.execute(
@@ -70,7 +70,7 @@ def attend_p():
 					(mNum,tNum,attend)
 				)
 				db.commit()
-				session["attend"] = 0
+				session["attend"] = session['mNum']
 			else:
 				return '이미 출석되었습니다'
 			db.close()

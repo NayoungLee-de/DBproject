@@ -8,7 +8,7 @@ CREATE TABLE member(
 	mName TEXT,
 	sex CHAR(4),
 	bDate CHAR(6),
-	phoneNum VARCHAR(30),
+	phoneNum TEXT,
 	userId TEXT,
 	userPw TEXT
 );
